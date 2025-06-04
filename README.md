@@ -32,3 +32,12 @@ The envisioned architecture for this web-ordering system (referred to as "Web-or
 ## Contributing
 
 * English modifications provided by Gemini. *(更自然的表達，加上動詞)*
+
+## use another github git repositary
+更新子模組：
+
+如果你想將子模組更新到它在主專案所記錄的最新提交：
+
+Bash
+
+git submodule update

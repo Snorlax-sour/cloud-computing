@@ -1,0 +1,3 @@
+[submodule "ording_system"]
+	path = ording_system
+	url = https://github.com/Snorlax-sour/Web-ordering-system-software_enginner.git

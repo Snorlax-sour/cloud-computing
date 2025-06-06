@@ -1,0 +1,85 @@
+# docker-compose.yml
+# 定義 Docker Compose 檔案格式的版本, not docker compose cli version
+version: '3.8'
+
+# 定義應用程式中的所有服務
+services:
+  # 前端服務 (例如：基於 Nginx 服務的靜態檔案)
+  frontend:
+    # 從 './frontend' 目錄下的 Dockerfile 構建映像
+    build: ./frontend
+    # 將容器的 80 埠映射到主機的 80 埠
+    ports:
+      - "80:80"
+    # 設定容器固定名稱
+    container_name: web_ordering_frontend
+    # 宣告此服務依賴於 'backend' 服務，確保 backend 先啟動
+    depends_on:
+      - backend
+    # 連接到 'app_network' 網路
+    networks:
+      - app_network
+    # 設定重啟策略
+    restart: unless-stopped
+
+  # 後端服務 (例如：Go Lang API 服務)
+  backend:
+    # 從 './backend' 目錄下的 Dockerfile 構建映像
+    build: ./backend
+    # 將容器的 8080 埠映射到主機的 5000 埠 (如果後端有對外 API)
+    ports:
+      - "5000:8080"
+    # 設定容器固定名稱
+    container_name: web_ordering_backend
+    # 宣告此服務依賴於 'database' 服務
+    environment:
+      # This is the path INSIDE the container where your Go app expects the SQLite file.
+      DATABASE_PATH: /app/data/orders.db
+      API_DEBUG_MODE: "true"
+
+    #depends_on: # because using sqlite is a file store, so you don't need waiting the database on
+      #- database
+    # 設定環境變數，後端應用程式將使用這些變數來連接資料庫
+    #environment:
+      #DATABASE_HOST: database       # 'database' 是網路中資料庫服務的名稱
+      #DATABASE_PORT: 5432           # PostgreSQL 預設埠
+      #DATABASE_USER: admin_user     # 請替換為您的資料庫用戶名
+      #DATABASE_PASSWORD: my_secret_password # 請替換為您的資料庫密碼
+      #DATABASE_NAME: order_db       # 請替換為您的資料庫名稱
+      #API_DEBUG_MODE: "true"
+    volumes:
+      - ./sql:/app/data
+    # 連接到 'app_network' 網路
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  # 資料庫服務 (例如：PostgreSQL)
+  #database:
+  ## 使用 PostgreSQL 官方映像的 13 版本
+  #image: postgres:13
+    # 設定容器固定名稱
+    #container_name: web_ordering_database
+    # 將具名卷宗 'db_data' 掛載到容器內資料庫資料的儲存路徑
+    #volumes:
+    #- db_data:/home/snor/cloud_computing/web_ording_system/sql/order_db.db
+      # 可以掛載初始化腳本，例如：
+      # - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    # 設定資料庫的環境變數 (這些是 PostgreSQL 映像特有的)
+    #environment:
+    #POSTGRES_DB: order_db         # 資料庫名稱
+    #POSTGRES_USER: admin_user     # 用戶名
+    #POSTGRES_PASSWORD: my_secret_password # 密碼
+    # 連接到 'app_network' 網路
+    networks:
+      - app_network
+    restart: unless-stopped
+
+# 定義具名卷宗，用於持久化資料庫資料等
+volumes:
+  db_data: # Docker 會自動管理這個卷宗的儲存位置
+
+# 定義自定義網路，讓服務之間可以互相通訊
+networks:
+  app_network:
+    driver: bridge # 使用預設的橋接驅動

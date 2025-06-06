@@ -1,0 +1,90 @@
+/* 全局樣式 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+/* 搜尋欄樣式 */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #C4E0F9; /* 綠色背景 */
+    padding: 10px;
+}
+
+.search-container input {
+    width: 70%;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.search-container .search-button {
+    background-color: #fff;
+    border: none;
+    padding: 8px 15px;
+    margin-left: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* 搜尋結果區域 */
+.result-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.result-container .date {
+    font-size: 20px;
+    background-color: #a4d3fc; /* 淺藍色背景 */
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: #fff;
+    display: inline-block;
+}
+
+/* 表格樣式 */
+.result-table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.result-table th {
+    background-color: #ffcc33; /* 黃色背景 */
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.result-table td {
+    background-color: #C4E0F9; /* 淺綠色背景 */
+    padding: 10px;
+    text-align: center;
+}
+
+.result-table tr:nth-child(even) td {
+    background-color: #a4d3fc; /* 偶數列不同背景色 */
+}
+
+.result-table tr:hover td {
+    background-color: #81b2d0; /* 滑鼠懸停效果 */
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #a600ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #510375;
+}

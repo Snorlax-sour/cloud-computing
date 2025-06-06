@@ -1,0 +1,9 @@
+/* 加入至中與間距的樣式 */
+body {
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+margin: 0;
+background-color: #f9f9f9;
+}

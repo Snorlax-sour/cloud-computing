@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-TW"> 
+    <!-- 根據語系顯示 -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜單分類</title>
+    <link rel="stylesheet" href="../CSS/normalize.css">
+    <link rel="stylesheet" href="../CSS/menu.css">
+
+</head>
+<body>
+    <!-- 頂部圖片區域 -->
+    <!-- <header>
+        <div class="header">
+            <img src="../IMAGE/home_page.jpg" alt="Food Display" class="header-img">
+        </div>  
+    </header> -->
+
+    <!-- 可滑動分類標籤 -->
+    <div class="categories-wrapper">
+        <div class="categories">
+            <div class="category" onclick="showCategory('main')">主餐</div>
+            <div class="category" onclick="showCategory('side')">副餐</div>
+            <div class="category" onclick="showCategory('drink')">飲料</div>
+            <div class="category" onclick="showCategory('dessert')">甜點</div>
+        </div>
+    </div>
+
+    <!-- 菜單內容 -->
+    <div id="menu" class="menu">
+        <!-- 主餐 -->
+        <div class="menu-item" data-category="main" data-name="義大利鳳梨炒飯" data-price=100 data-img="../IMAGE/fired_rice.webp">
+            <img src="../IMAGE/fired_rice.webp" alt="義大利鳳梨炒飯">
+            <div class="item-details">
+                <h3>義大利鳳梨炒飯</h3>
+                <p>成份：鳳梨、飯、蛋、醬油、雞蛋、蝦仁、蔥、蕃茄</p>
+            </div>
+        </div>
+        <div class="menu-item" data-category="main" data-name="海鮮披薩" data-price=180 data-img="../IMAGE/seafood_pizza.png">
+            <img src="../IMAGE/seafood_pizza.png" alt="海鮮披薩">
+            <div class="item-details">
+                <h3>海鮮披薩</h3>
+                <p>成份：花枝、蝦仁、蟹條、海苔粉</p>
+            </div>
+        </div>
+        <!-- 副餐 -->
+        <div class="menu-item" data-category="side" data-name="薯條" data-price=50 data-img="../IMAGE/French_fries.jpg" style="display: none;">
+            <img src="../IMAGE/French_fries.jpg" alt="薯條">
+            <!--
+                picture source:
+                https://estarfood.com/wp-content/uploads/2021/04/I11-1.jpg
+            -->
+            <div class="item-details">
+                <h3>薯條</h3>
+                <p>成份：馬鈴薯、鹽、油</p>
+            </div>
+        </div>
+        <div class="menu-item" data-category="side" data-name="沙拉" data-price=80 data-img="../IMAGE/Salad.webp" style="display: none;">
+            <img src="../IMAGE/Salad.webp" alt="沙拉">
+            <!--
+                picutre source:
+                https://imageproxy.icook.network/fit?background=255%2C255%2C255&height=443&nocrop=true&stripmeta=true&type=auto&url=http%3A%2F%2Ftokyo-kitchen.icook.tw.s3.amazonaws.com%2Fuploads%2Frecipe%2Fcover%2F199265%2F2ed2e19eafecde60.jpg&width=443
+            -->
+            <div class="item-details">
+                <h3>沙拉</h3>
+                <p>成份：生菜、番茄、醬料</p>
+            </div>
+        </div>
+        <!-- 飲料 -->
+        <div class="menu-item" data-category="drink" data-name="咖啡" data-price=50 data-img="../IMAGE/Coffice.jpeg" style="display: none;">
+            <img src="../IMAGE/Coffice.jpeg" alt="咖啡">
+            <!--
+                pciture source:
+                https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx2xIcWnGN9pvbN_6ZCR1FRRxEunV7jntnwg&s
+            -->
+            <div class="item-details">
+                <h3>咖啡</h3>
+                <p>成份：咖啡豆、水、牛奶</p>
+            </div>
+        </div>
+        <div class="menu-item" data-category="drink" data-name="果汁" data-price=50 data-img="../IMAGE/juice.jpgitokhqdk4qxb" style="display: none;">
+            <img src="../IMAGE/juice.jpgitokhqdk4qxb" alt="果汁">
+            <!--
+                picture source: 
+                https://www.marthastewart.com/thmb/v-noUz0Pm9dexdEBhiOKiC-TKhk=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/oj-upgrade-103121806_horiz_0-83474c4f9a0b4d7e9c06fc989fa1f5d2.jpgitokHQdK4qxB
+            -->
+            <div class="item-details">
+                <h3>果汁</h3>
+                <p>成份：新鮮水果</p>
+            </div>
+        </div>
+        <!-- 甜點 -->
+        <div class="menu-item" data-category="dessert" data-name="蛋糕" data-price=120 data-img="../IMAGE/Cake.jpeg" style="display: none;">
+            <img src="../IMAGE/Cake.jpeg" alt="蛋糕">
+            <!--
+                picture source:
+                data:image/jpeg;base64,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
+            -->
+            <div class="item-details">
+                <h3>蛋糕</h3>
+                <p>成份：麵粉、奶油、糖</p>
+            </div>
+        </div>
+        <div class="menu-item" data-category="dessert" data-name="冰淇淋" data-price=40 data-img="../IMAGE/Chocolate_Ice_Cream.jpeg" style="display: none;">
+            <img src="../IMAGE/Chocolate_Ice_Cream.jpeg" alt="冰淇淋"> 
+                <!-- picture source:  
+                data:image/jpeg;base64,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   
+                -->
+            <div class="item-details">
+                <h3>冰淇淋</h3>
+                <p>成份：牛奶、糖、巧克力</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 彈出式視窗 -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" id="closePopup">&times;</span>
+            <div id="tagContainer" class="popup-options"></div>
+            <h2 id="popupTitle">餐點名稱</h2>
+            <p id="popupDescription">餐點描述</p>
+            <p><strong>價格：</strong><span id="popupPrice">0</span> 元</p>
+            <button id="confirmOrder">加入購物車</button>
+        </div>
+    </div>
+
+
+    <!-- 底部導航欄 -->
+    <div class="footer">
+        <a href="./home_page.html">
+            <button class="nav-btn">
+                <img src="../IMAGE/HOME_ICON.png" alt="首頁">
+            </button>
+        </a>
+        <a href="./order_process.html">
+            <button class="nav-btn">
+                <img src="../IMAGE/shopping-trolley-icon.png" alt="購物車">
+            </button>
+        </a>
+    </div>
+
+    <script src="../JS/menu.js"></script>
+</body>
+</html>

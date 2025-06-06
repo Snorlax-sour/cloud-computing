@@ -1,0 +1,229 @@
+/* 樣式設置 */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 整體居中 */
+}
+
+/* 頂部圖片區域 */
+.header {
+    width: 100%;
+    text-align: center;
+}
+
+.header-img {
+    width: 50%;
+    height: 50%;
+}
+
+/* 可滑動分類標籤容器 */
+.categories-wrapper {
+    width: 100%; /* 容器寬度調整 */
+    margin: 0 auto; /* 水平居中 */
+    overflow-x: auto; /* 水平滾動 */
+    white-space: nowrap; /* 禁止內容換行 */
+    background-color: #FFF2CC; /* 淡黃色背景 */
+    padding: 30px 0;
+    display: flex;
+    justify-content: center; /* 水平置中分類標籤 */
+    scroll-behavior: smooth; /* 平滑滾動效果 */
+}
+
+.categories {
+    display: flex;
+    gap: 50px;
+}
+
+.category {
+    display: inline-block;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: black;
+    background-color: #FFD700;
+    border-radius: 5px;
+    padding: 5px 15px;
+    cursor: pointer;
+    white-space: nowrap;
+    width: 120px; /* 固定寬度，確保一致 */
+    height: 40px; /* 固定高度，確保一致 */
+    line-height: 40px; /* 垂直居中 */
+}
+.category:hover{
+    background-color: #caac00;
+}
+
+.category.active {
+    background-color: #FFA500; /* 活躍時的橙色 */
+    color: white;
+}
+
+/* 菜單內容 */
+.menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* 調整容器寬度 */
+    margin: 10px auto;
+}
+
+.menu-items {
+    display: block;
+    gap: 10px;
+    overflow-y: auto;
+    height: 300px;
+    white-space: nowrap;
+    scroll-behavior: smooth;
+    padding: 10px;
+    background-color: #F9F9F9;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    background-color: #C4E0F9; /* 藍色背景 */
+    margin: 10px 10px;
+    padding: 20px;
+    width: 90%; /* 固定內容寬度比例 */
+    max-width: 500px; /* 最大寬度 */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item:hover {
+    background-color: #81b2d0;
+}
+
+/* 菜單項目的圖片 */
+.menu-item img {
+    width: 100px; /* 固定寬度 */
+    height: 100px; /* 固定高度，確保比例 */
+    border-radius: 8px;
+    object-fit: cover; /* 圖片縮放填充區域 */
+    margin-right: 10px;
+}
+
+/* 菜單內容的文字部分 */
+.item-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.item-details h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+    word-wrap: break-word; /* 長字換行 */
+}
+
+.item-details p {
+    margin: 5px 0 0 0;
+    font-size: 1rem;
+    color: #555;
+    word-wrap: break-word; /* 長字換行 */
+}
+
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; */
+    background-color: #f4f4f9;
+}
+  
+button {
+    padding: 10px 20px;
+    background-color: #a600ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #510375;
+}
+  
+.popup {
+    display: none; /* 預設隱藏 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+    justify-content: center;
+    align-items: center;
+}
+  
+/* 彈出式視窗 */
+.popup-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+  
+.popup-content h2 {
+    margin: 0 0 10px;
+}
+  
+.popup-content .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;    
+}  
+
+.popup-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 讓 checkbox 和標籤對齊左邊 */
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.popup-buttons button {
+    width: 45%;
+}
+
+
+/* 底部導航欄 */
+.footer {
+    position: fixed;
+    bottom: 0; /* 距離底部 0 像素 */
+    display: flex;
+    justify-content: space-around;
+    background-color: #B8E0F9; /* 淡藍色背景 */
+    width: 100%;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+}
+
+.nav-btn:hover {
+    background-color: #81b2d0;
+}
+
+.nav-btn img {
+    width: 50px; /* 固定寬度 */
+    height: 50px; /* 固定高度 */
+}

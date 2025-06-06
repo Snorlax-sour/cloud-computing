@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> 管理者登入 </title>
+        <link rel="stylesheet" href="../CSS/normalize.css">
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../CSS/basic_icon_or_something_with_component.css"> 
+        <link rel="stylesheet" href="../CSS/login.css"> 
+
+        <!-- using the same file to decorate HOME_ICON of class name -->
+        
+    </head>
+    <body class="Pale_blue_background" id="input_place_1">
+        <a href="./home_page.html" class="home-icon-link">
+            <img class="home-icon" src="../IMAGE/HOME_ICON.png" alt="回到首頁">
+        </a> 
+        <form id="Input_bar" action="/login" method="POST">
+            <label for="Account_input_box" > Account:</label>
+            <input id="Account_input_box" type="text" placeholder="請輸入您的帳號" class="Account_info" name="username" required> <br>
+            <label for="Password_input_box"> Password: </label>
+            <input id="Password_input_box" type="password" placeholder="請輸入您的密碼" class="Account_info" name="password"  required> <br>
+            <div class="Purple_button">
+               <button id="account" type="submit" value="login"> 驗證帳號密碼 </button>
+            </div>
+         </form>
+    </body>
+</html>

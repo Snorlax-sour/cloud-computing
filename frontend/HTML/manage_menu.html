@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-TW"> 
+    <!-- 根據語系顯示 -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜單分類</title>
+    <link rel="stylesheet" href="../CSS/normalize.css">
+    <link rel="stylesheet" href="../CSS/menu.css">
+
+</head>
+<body>
+    <!-- 可滑動分類標籤 -->
+    <div class="categories-wrapper">
+        <div class="categories">
+            <div class="category" onclick="showCategory('main')">主餐</div>
+            <div class="category" onclick="showCategory('side')">副餐</div>
+            <div class="category" onclick="showCategory('drink')">飲料</div>
+            <div class="category" onclick="showCategory('dessert')">甜點</div>
+        </div>
+    </div>
+
+    <!-- 菜單內容 -->
+    <div id="menu" class="menu">
+        <!-- 主餐 -->
+        <div class="menu-item" data-category="main" data-name="義大利鳳梨炒飯" data-price=100 data-img="../IMAGE/fired_rice.webp">
+            <img src="../IMAGE/fired_rice.webp" alt="義大利鳳梨炒飯">
+            <div class="item-details">
+                <h3>義大利鳳梨炒飯</h3>
+                <p>成份：鳳梨、飯、蛋、醬油、雞蛋、蝦仁、蔥、蕃茄</p>
+            </div>
+        </div>
+        <div class="menu-item" data-category="main" data-name="海鮮披薩" data-price=180 data-img="../IMAGE/seafood_pizza.png">
+            <img src="../IMAGE/seafood_pizza.png" alt="海鮮披薩">
+            <div class="item-details">
+                <h3>海鮮披薩</h3>
+                <p>成份：花枝、蝦仁、蟹條、海苔粉</p>
+            </div>
+        </div>
+        <!-- 副餐 -->
+        <div class="menu-item" data-category="side" data-name="薯條" data-price=50 data-img="../IMAGE/French_fries.jpg" style="display: none;">
+            <img src="../IMAGE/French_fries.jpg" alt="薯條">
+            <div class="item-details">
+                <h3>薯條</h3>
+                <p>成份：馬鈴薯、鹽、油</p>
+            </div>
+        </div>
+        <div class="menu-item" data-category="side" data-name="沙拉" data-price=80 data-img="../IMAGE/Salad.webp" style="display: none;">
+            <img src="../IMAGE/Salad.webp" alt="沙拉">
+            <div class="item-details">
+                <h3>沙拉</h3>
+                <p>成份：生菜、番茄、醬料</p>
+            </div>
+        </div>
+        <!-- 飲料 -->
+        <div class="menu-item" data-category="drink" data-name="咖啡" data-price=50 data-img="../IMAGE/Coffice.jpeg" style="display: none;">
+            <img src="../IMAGE/Coffice.jpeg" alt="咖啡">
+            <div class="item-details">
+                <h3>咖啡</h3>
+                <p>成份：咖啡豆、水、牛奶</p>
+            </div>
+        </div>
+        <div class="menu-item" data-category="drink" data-name="果汁" data-price=50 data-img="../IMAGE/juice.jpgitokhqdk4qxb" style="display: none;">
+            <img src="../IMAGE/juice.jpgitokhqdk4qxb" alt="果汁">
+            <div class="item-details">
+                <h3>果汁</h3>
+                <p>成份：新鮮水果</p>
+            </div>
+        </div>
+        <!-- 甜點 -->
+        <div class="menu-item" data-category="dessert" data-name="蛋糕" data-price=120 data-img="../IMAGE/Cake.jpeg" style="display: none;">
+            <img src="../IMAGE/Cake.jpeg" alt="蛋糕">
+            <div class="item-details">
+                <h3>蛋糕</h3>
+                <p>成份：麵粉、奶油、糖</p>
+            </div>
+        </div>
+        <div class="menu-item" data-category="dessert" data-name="冰淇淋" data-price=40 data-img="../IMAGE/Chocolate_Ice_Cream.jpeg" style="display: none;">
+            <img src="../IMAGE/Chocolate_Ice_Cream.jpeg" alt="冰淇淋"> 
+            <div class="item-details">
+                <h3>冰淇淋</h3>
+                <p>成份：牛奶、糖、巧克力</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" id="closePopup">&times;</span>
+            <h2 id="popupTitle">餐點名稱</h2>
+            <input type="text" id="editName" placeholder="修改名稱">
+            <p><strong>價格：</strong><input type="number" id="editPrice" placeholder="修改價格"> 元</p>
+            <textarea id="editDescription" placeholder="修改描述"></textarea>
+            <div id="tagContainer" class="popup-options"></div>
+            <div class="popup-buttons">
+                <button id="updateMenuItem">更新餐點</button>
+                <button id="cancelUpdate">返回</button>
+            </div>
+        </div>
+    </div>     
+
+    <!-- 底部導航欄 -->
+    <div class="footer">
+        <a href="./manage_home_page.html">
+            <button class="nav-btn">
+                <img src="../IMAGE/arrow-left.png" alt="管理者首頁">
+            </button>
+        </a>
+        <a href="./add_order.html">
+            <button class="nav-btn">
+                <img src="../IMAGE/add.png" alt="新增餐點">
+            </button>
+        </a>
+    </div>
+    <script src="../JS/manage_menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>新增餐點</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引用通用的 CSS 樣式 -->
+    <link rel="stylesheet" href="/static/CSS/common_table.css">
+ <style>
+        /* --- 原有的樣式，大部分保持不變 --- */
+        .form-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            /* 【新增】清除浮動，為了配合 label 的 float */
+            overflow: hidden; 
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            border-color: #a600ff;
+            box-shadow: 0 0 0 2px rgba(166, 0, 255, 0.2);
+            outline: none;
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            background-color: #a600ff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #510375;
+        }
+
+        /* --- 【【【 核心修改從這裡開始 】】】 --- */
+        
+        .form-group label {
+            /* 1. 讓 label 向左浮動 */
+            float: left;
+            /* 2. 給 label 一個固定的寬度 */
+            width: 120px; 
+            /* 3. 讓文字靠右對齊 */
+            text-align: right;
+            /* 4. 增加一些右邊距，和輸入框隔開 */
+            padding-right: 15px;
+            /* 5. 調整行高，使其與輸入框大致垂直居中 */
+            line-height: 40px; /*  aproximately the height of the input box */
+            font-weight: 600;
+            margin-bottom: 0;
+            color: #4a5568;
+            box-sizing: border-box; /* 確保 padding 不會影響寬度 */
+        }
+        
+        /* 讓跟在 label 後面的元素 (input, textarea) 填滿剩餘空間 */
+        .form-group .form-control {
+            /* 6. display: block; 讓它成為塊級元素 */
+            display: block;
+            /* 7. overflow: hidden; 觸發 BFC，讓它填滿剩餘的寬度 */
+            overflow: hidden;
+        }
+
+        /* 針對提交按鈕，我們不希望它也跟著浮動，所以把它恢復原狀 */
+        #add-menu-form .form-group:last-child {
+            /* 清除最後一個 form-group 的浮動影響 */
+            overflow: visible; 
+        }
+        #add-menu-form .form-group:last-child button {
+            float: none;
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="page-header">
+            <h1>新增餐點項目</h1>
+            <a href="/manage_menu.html" class="back-link">返回菜單管理</a>
+        </header>
+
+        <div class="form-container">
+            <!-- 【核心】表單會將資料 POST 到後端的 /api/add_menu_item -->
+            <!-- enctype="multipart/form-data" 是為了未來上傳圖片做準備 -->
+            <form id="add-menu-form" action="/api/add_menu_item" method="POST">
+                
+                <div class="form-group">
+                    <label for="menu_name">餐點名稱</label>
+                    <input type="text" id="menu_name" name="menu_name" class="form-control" placeholder="例如：黃金脆薯" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="menu_money">價格 (元)</label>
+                    <input type="number" id="menu_money" name="menu_money" class="form-control" placeholder="例如：60" required min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="menu_describe">描述與成份</label>
+                    <textarea id="menu_describe" name="menu_describe" class="form-control" placeholder="例如：外酥內軟的經典美式薯條，附番茄醬。"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="menu_image">圖片路徑</label>
+                    <input type="text" id="menu_image" name="menu_image" class="form-control" placeholder="例如：/static/IMAGE/French_fries.jpg" required>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="submit-btn">確認新增</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</body>
+</html>

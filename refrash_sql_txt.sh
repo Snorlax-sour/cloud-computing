@@ -1,0 +1,1 @@
+cat ./backend/sql/*.sql    > ./sql.txt 

@@ -52,7 +52,10 @@ func main() {
 	http.HandleFunc("/api/manageFinancial", db.manageFinancialHandler)
 	// manage logout 
 	http.HandleFunc("/api/logout", db.logoutHandler)
-
+	// menu request items
+	http.HandleFunc("/api/menu_items", db.getMenuItemsHandler)
+	// manage menu, add menu funcational
+	http.HandleFunc("/api/add_menu_item", db.addMenuItemHandler)
 	// Start Server
 	log.Println("Server is listening on: http://localhost:8080 in container, expose http://localhost:5000 ")
 	err = http.ListenAndServe(":8080", nil)

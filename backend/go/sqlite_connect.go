@@ -468,3 +468,129 @@ func (db *DB) logoutHandler(w http.ResponseWriter, r *http.Request) {
     log.Println("Session cookie deleted. Redirecting to home page.")
     http.Redirect(w, r, "/home_page.html", http.StatusFound)
 }
+
+// 在 sqlite_connect.go 中
+
+// =================================================================
+// 菜單功能相關 (基於舊的資料庫結構)
+// =================================================================
+
+// MenuItemData struct 對應舊的 `Menu` 表
+type MenuItemData struct {
+    Sn          int    `json:"menu_sn"`
+    Name        string `json:"menu_name"`
+    Description string `json:"menu_describe_and_material"`
+    Price       int    `json:"menu_money"`
+    ImageURL    string `json:"menu_image"`
+    // 舊表中的 menu_visable 和 menu_need_ingredient 我們在查詢時處理，不在 struct 中體現
+}
+
+// getAllMenuItems 從舊的 `Menu` 表獲取資料
+func (db *DB) getAllMenuItems() ([]MenuItemData, error) {
+    // 【關鍵】查詢語句使用舊的表名 `Menu` 和舊的欄位名
+    query := "SELECT menu_sn, menu_name, menu_describe_and_material, menu_money, menu_image FROM Menu WHERE menu_visable = 1"
+    rows, err := db.db.Query(query)
+    if err != nil {
+        log.Printf("[舊結構] 查詢 Menu 表時出錯: %v", err)
+        return nil, err
+    }
+    defer rows.Close()
+
+    var items []MenuItemData
+    for rows.Next() {
+        var item MenuItemData
+        var description sql.NullString // 處理 menu_describe_and_material 可能為 NULL
+
+        // 【關鍵】Scan 的變數數量和順序必須與 SELECT 的欄位完全對應
+        err := rows.Scan(&item.Sn, &item.Name, &description, &item.Price, &item.ImageURL)
+        if err != nil {
+            log.Printf("[舊結構] 掃描 Menu 表的某一行時出錯: %v", err)
+            continue 
+        }
+        item.Description = description.String // 處理 NULL 值
+        
+        items = append(items, item)
+    }
+    return items, nil
+}
+
+// getMenuItemsHandler 是處理 API 請求的函數 (這個函數通常不需要修改)
+func (db *DB) getMenuItemsHandler(w http.ResponseWriter, r *http.Request) {
+    log.Println("=====================================================")
+    log.Println("getMenuItemsHandler (舊結構) 被呼叫")
+
+    items, err := db.getAllMenuItems()
+    if err != nil {
+        http.Error(w, "無法獲取菜單項目", http.StatusInternalServerError)
+        return
+    }
+
+    log.Printf("[舊結構] 成功從資料庫檢索到 %d 個菜單項目。", len(items))
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(items)
+}
+
+// 在 sqlite_connect.go 中
+
+// addMenuItemHandler 處理新增餐點的請求
+func (db *DB) addMenuItemHandler(w http.ResponseWriter, r *http.Request) {
+    log.Println("=====================================================")
+    log.Println("addMenuItemHandler (舊結構) 被呼叫")
+
+    // 1. 檢查請求方法是否為 POST
+    if r.Method != http.MethodPost {
+        http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    // 2. 解析表單數據
+    // 如果未來要處理文件上傳，需要用 r.ParseMultipartForm()
+    if err := r.ParseForm(); err != nil {
+        http.Error(w, "無法解析表單", http.StatusBadRequest)
+        return
+    }
+
+    // 3. 從表單中獲取值
+    // r.FormValue() 會獲取與 <input name="..."> 匹配的值
+    name := r.FormValue("menu_name")
+    price := r.FormValue("menu_money")
+    description := r.FormValue("menu_describe")
+    imageURL := r.FormValue("menu_image")
+
+    // 4. 簡單的後端驗證
+    if name == "" || price == "" || imageURL == "" {
+        http.Error(w, "餐點名稱、價格和圖片路徑為必填項", http.StatusBadRequest)
+        return
+    }
+    
+    log.Printf("收到新增餐點請求: 名稱=%s, 價格=%s, 描述=%s, 圖片=%s", name, price, description, imageURL)
+
+    // 5. 準備 SQL 插入語句
+    // 使用舊的 `Menu` 表和欄位名
+    query := `
+        INSERT INTO Menu (menu_name, menu_money, menu_describe_and_material, menu_image, menu_visable)
+        VALUES (?, ?, ?, ?, 1)
+    `
+    stmt, err := db.db.Prepare(query)
+    if err != nil {
+        log.Printf("準備 SQL 語句時出錯: %v", err)
+        http.Error(w, "資料庫內部錯誤", http.StatusInternalServerError)
+        return
+    }
+    defer stmt.Close()
+
+    // 6. 執行 SQL 語句
+    _, err = stmt.Exec(name, price, description, imageURL)
+    if err != nil {
+        // 處理可能的錯誤，例如 'UNIQUE constraint failed: Menu.menu_name'
+        log.Printf("執行 SQL 插入時出錯: %v", err)
+        http.Error(w, "無法新增餐點，可能是名稱重複或資料格式錯誤。", http.StatusInternalServerError)
+        return
+    }
+
+    log.Printf("成功新增餐點: %s", name)
+
+    // 7. 新增成功後，重導向回菜單管理頁面
+    http.Redirect(w, r, "/manage_menu.html", http.StatusFound)
+}

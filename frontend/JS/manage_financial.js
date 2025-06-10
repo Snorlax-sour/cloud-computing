@@ -11,53 +11,55 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {Array} data - 從後端 API 收到的財務資料物件陣列。
      */
     function displayFinancialData(data) {
-        // 步驟 A：防禦性檢查，確保我們收到的是一個陣列
-        if (!Array.isArray(data)) {
-            console.error("收到的財務資料不是一個有效的陣列:", data);
-            return; // 如果資料格式不對，直接停止執行，避免錯誤
-        }
-        
-        const summaryElement = document.getElementById('financial-summary');
-        const tableBody = document.getElementById('financial-table-body');
-
-        // 步驟 B：在前端計算總收入、總支出和總利潤
-        let totalRevenue = 0;
-        let totalCost = 0;
-
-        data.forEach(item => {
-            // 使用後端 Go struct JSON 標籤定義的鍵名
-            if (item.financial_action_type === '收入') {
-                totalRevenue += item.financial_action_cost;
-            } else if (item.financial_action_type === '支出') {
-                totalCost += item.financial_action_cost;
-            }
-        });
-
-        const totalProfit = totalRevenue - totalCost;
-
-        // 步驟 C：更新財務總結區塊的 HTML
-        summaryElement.innerHTML = `
-            <p>總收入: ${totalRevenue.toFixed(2)} 元</p>
-            <p>總支出: ${totalCost.toFixed(2)} 元</p>
-            <p><strong>總利潤: ${totalProfit.toFixed(2)} 元</strong></p>
-        `;
-
-        // 步驟 D：清空舊的表格內容，並根據新資料建立表格的每一行
-        tableBody.innerHTML = ''; 
-        data.forEach(item => {
-            const row = document.createElement('tr');
-            const revenueCell = item.financial_action_type === '收入' ? item.financial_action_cost.toFixed(2) : '0.00';
-            const costCell = item.financial_action_type === '支出' ? item.financial_action_cost.toFixed(2) : '0.00';
-            
-            row.innerHTML = `
-                <td>${item.financial_date}</td>
-                <td>${revenueCell}</td>
-                <td>${costCell}</td>
-                <td>${item.financial_action_describe}</td>
-            `;
-            tableBody.appendChild(row);
-        });
+    if (!Array.isArray(data)) {
+        console.error("收到的財務資料不是一個有效的陣列:", data);
+        return;
     }
+    
+    const summaryElement = document.getElementById('financial-summary');
+    const tableBody = document.getElementById('financial-table-body');
+
+    let totalRevenue = 0;
+    let totalCost = 0;
+
+    data.forEach(item => {
+        if (item.financial_action_type === '收入') {
+            totalRevenue += item.financial_action_cost;
+        } else if (item.financial_action_type === '支出') {
+            totalCost += item.financial_action_cost;
+        }
+    });
+
+    const totalProfit = totalRevenue - totalCost;
+    
+    // 【優化】根據利潤正負，決定 strong 標籤的 class
+    const profitClass = totalProfit >= 0 ? 'profit' : 'loss';
+
+    summaryElement.innerHTML = `
+        <p>總收入<br><strong class="income">${totalRevenue.toFixed(2)} 元</strong></p>
+        <p>總支出<br><strong class="expense">${totalCost.toFixed(2)} 元</strong></p>
+        <p>總利潤<br><strong class="${profitClass}">${totalProfit.toFixed(2)} 元</strong></p>
+    `;
+
+    tableBody.innerHTML = ''; 
+    data.forEach(item => {
+        const row = document.createElement('tr');
+        const revenueCell = item.financial_action_type === '收入' ? item.financial_action_cost.toFixed(2) : '0.00';
+        const costCell = item.financial_action_type === '支出' ? item.financial_action_cost.toFixed(2) : '0.00';
+        
+        // 【優化】為收入和支出的 td 加上 class
+        const revenueClass = item.financial_action_type === '收入' ? 'class="income"' : '';
+        const costClass = item.financial_action_type === '支出' ? 'class="expense"' : '';
+
+        row.innerHTML = `
+            <td>${item.financial_date}</td>
+            <td ${revenueClass}>${revenueCell}</td>
+            <td ${costClass}>${costCell}</td>
+            <td>${item.financial_action_describe}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
 
     /**
      * 負責向後端 API 發送請求，獲取財務資料。

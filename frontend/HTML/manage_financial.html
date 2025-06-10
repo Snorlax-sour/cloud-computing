@@ -3,35 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>財務管理</title>
-    <!-- CSS 連結可以繼續放在 head -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS 連結保持不變 -->
     <link rel="stylesheet" href="/static/CSS/manage_financial.css">
 </head>
 <body>
-    <h1>財務報表</h1>
 
-    <!-- 這是您要用 JS 填入資料的地方 -->
-    <div id="financial-summary">
-        <!-- 財務總結將顯示在這裡 -->
+    <!-- 新增一個主容器，讓所有內容集中 -->
+    <div class="container">
+        <header class="page-header">
+            <h1>財務報表</h1>
+            <!-- 新增一個返回按鈕，方便導航 -->
+            <a href="/manage_home_page.html" class="back-link">返回管理主頁</a>
+        </header>
+
+        <!-- 財務總結區塊 -->
+        <div id="financial-summary" class="summary-container">
+            <!-- JS 將會在這裡填入總收入、總支出、總利潤 -->
+        </div>
+
+        <!-- 新增一個表格容器 -->
+        <div class="table-container">
+            <table id="financial-table">
+                <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>收入 (元)</th>
+                        <th>支出 (元)</th>
+                        <th>項目描述</th>
+                    </tr>
+                </thead>
+                <tbody id="financial-table-body">
+                    <!-- JS 將會在這裡填入財務明細 -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <table id="financial-table">
-        <thead>
-            <tr>
-                <th>日期</th>
-                <th>收入</th>
-                <th>支出</th>
-                <th>利潤</th>
-            </tr>
-        </thead>
-        <tbody id="financial-table-body">
-            <!-- 財務明細將動態生成在這裡 -->
-        </tbody>
-    </table>
-
-    <!-- 
-      原本可能在這裡或在 <head> 裡的 <script> 標籤，
-      把它移動到這裡！
-    -->
+    <!-- JS 腳本連結保持不變，並維持在 body 的最末端 -->
     <script src="/static/JS/manage_financial.js"></script> 
 </body>
 </html>

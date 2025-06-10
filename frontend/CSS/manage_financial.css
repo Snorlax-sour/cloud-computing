@@ -1,90 +1,148 @@
-/* 全局樣式 */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-}
+/* =================================================================
+   財務報表頁面 (manage_financial.css) 的美化版本
+   ================================================================= */
 
-/* 搜尋欄樣式 */
-.search-container {
+/* --- 全局樣式 --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f2f5; /* 使用更柔和的淺灰色背景 */
+    color: #333;
     display: flex;
     justify-content: center;
+    align-items: flex-start; /* 從頂部開始對齊 */
+    min-height: 100vh;
+}
+
+/* --- 主容器 --- */
+.container {
+    width: 100%;
+    max-width: 960px; /* 設定最大寬度，在大螢幕上更好看 */
+    background-color: #ffffff;
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* --- 頁面標題和返回按鈕 --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    background-color: #C4E0F9; /* 綠色背景 */
-    padding: 10px;
+    border-bottom: 1px solid #e8e8e8;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
 }
 
-.search-container input {
-    width: 70%;
-    padding: 8px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
+.page-header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #1a202c;
 }
 
-.search-container .search-button {
-    background-color: #fff;
-    border: none;
-    padding: 8px 15px;
-    margin-left: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* 搜尋結果區域 */
-.result-container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.result-container .date {
-    font-size: 20px;
-    background-color: #a4d3fc; /* 淺藍色背景 */
-    padding: 5px 10px;
-    border-radius: 5px;
-    color: #fff;
-    display: inline-block;
-}
-
-/* 表格樣式 */
-.result-table {
-    width: 90%;
-    margin: 20px auto;
-    border-collapse: collapse;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.result-table th {
-    background-color: #ffcc33; /* 黃色背景 */
-    padding: 10px;
-    text-align: center;
-    font-weight: bold;
-}
-
-.result-table td {
-    background-color: #C4E0F9; /* 淺綠色背景 */
-    padding: 10px;
-    text-align: center;
-}
-
-.result-table tr:nth-child(even) td {
-    background-color: #a4d3fc; /* 偶數列不同背景色 */
-}
-
-.result-table tr:hover td {
-    background-color: #81b2d0; /* 滑鼠懸停效果 */
-}
-
-button {
-    padding: 10px 20px;
+.back-link {
     background-color: #a600ff;
     color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
 }
 
-button:hover {
+.back-link:hover {
     background-color: #510375;
+}
+
+/* --- 財務總結卡片 --- */
+.summary-container {
+    display: flex;
+    gap: 20px; /* 卡片之間的間距 */
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* 讓 JS 生成的 p 標籤變成卡片 */
+.summary-container p {
+    flex: 1; /* 讓三張卡片等寬 */
+    background-color: #f9fafb;
+    margin: 0;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    font-size: 16px;
+    color: #4b5563;
+}
+
+/* 讓關鍵數字更突出 */
+.summary-container p strong {
+    display: block;
+    font-size: 28px;
+    font-weight: 600;
+    color: #111827;
+    margin-top: 8px;
+}
+
+/* 特別為「總利潤」的數字上色 */
+.summary-container p strong.profit {
+    color: #10b981; /* 綠色代表利潤 */
+}
+
+.summary-container p strong.loss {
+    color: #ef4444; /* 紅色代表虧損 */
+}
+
+/* --- 表格容器和樣式 --- */
+.table-container {
+    overflow-x: auto; /* 在小螢幕上，如果表格太寬，可以水平滾動 */
+}
+
+#financial-table {
+    width: 100%;
+    border-collapse: collapse; /* 移除表格儲存格之間的空隙 */
+}
+
+#financial-table th, 
+#financial-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb; /* 只保留底部的邊線，更簡潔 */
+}
+
+/* 表格標頭 */
+#financial-table thead {
+    background-color: #f3f4f6;
+}
+
+#financial-table th {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* 表格內容 */
+#financial-table tbody tr:hover {
+    background-color: #f9fafb; /* 滑鼠懸停效果 */
+}
+
+/* 讓數字靠右對齊，方便比較 */
+#financial-table td:nth-child(2),
+#financial-table td:nth-child(3) {
+    text-align: right;
+    font-family: "Courier New", Courier, monospace; /* 使用等寬字體讓數字對齊 */
+}
+
+/* 為收入和支出上色 */
+#financial-table td.income {
+    color: #16a34a; /* 綠色 */
+    font-weight: 500;
+}
+
+#financial-table td.expense {
+    color: #dc2626; /* 紅色 */
+    font-weight: 500;
 }

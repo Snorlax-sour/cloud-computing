@@ -8,14 +8,47 @@
         <link rel="stylesheet" href="/static/CSS/basic_icon_or_something_with_component.css">
     </head>
     <body class="Pale_blue_background" id="input_place_1">
+        <!-- 返回首頁的圖標保持不變 -->
         <a href="/home_page.html" class="home-icon-link">
-            alt="回到首頁"><img class="home-icon" src="/static/IMAGE/HOME_ICON.png" 
-        </a> 
+            <img class="home-icon" src="/static/IMAGE/HOME_ICON.png" alt="回到首頁">
+        </a>
+
         <div class="Purple_button">
             <a href="/manage_menu.html"> <button id="manage_menu" type="button" value="manage_menu"> 管理餐點 </button></a>
             <a href="/manage_financial.html">  <button id="manage_financial" type="button" value="manage_financial"> 管理財務 </button></a>
-            <a href
-            ="/manage_ingredient.html"> <button id="manage_ingredient" type="button" value="manage_ingredient"> 管理食材 </button></a>
-        </div> 
+            <a href="/manage_ingredient.html"> <button id="manage_ingredient" type="button" value="manage_ingredient"> 管理食材 </button></a>
+            
+            <!-- 【【【 新增登出按鈕 】】】 -->
+            <!-- 我們給它一個不同的 class 或 id 來區別樣式 -->
+            <button id="logoutButton" class="logout-button">登出</button>
+        </div>
+
+        <!-- 【【【 新增 JavaScript 腳本 】】】 -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const logoutButton = document.getElementById('logoutButton');
+                
+                if (logoutButton) {
+                    logoutButton.addEventListener('click', function() {
+                        // 確認是否要登出
+                        if (confirm('您確定要登出嗎？')) {
+                            // 向後端的登出 API 發送請求
+                            fetch('/api/logout', {
+                                method: 'POST', // 使用 POST 請求更安全
+                            })
+                            .then(response => {
+                                // 不論成功失敗，都跳轉回首頁
+                                window.location.href = '/home_page.html';
+                            })
+                            .catch(error => {
+                                console.error('登出時發生錯誤:', error);
+                                // 即使出錯，也嘗試跳轉
+                                window.location.href = '/home_page.html';
+                            });
+                        }
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

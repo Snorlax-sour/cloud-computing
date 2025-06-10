@@ -4,27 +4,28 @@
     <meta charset="UTF-8">
     <title>財務管理</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CSS 連結保持不變 -->
-    <link rel="stylesheet" href="/static/CSS/manage_financial.css">
+    <!-- 【修改這裡】指向新的通用 CSS 檔案 -->
+    <link rel="stylesheet" href="/static/CSS/common_table.css">
 </head>
 <body>
-
-    <!-- 新增一個主容器，讓所有內容集中 -->
     <div class="container">
         <header class="page-header">
             <h1>財務報表</h1>
-            <!-- 新增一個返回按鈕，方便導航 -->
             <a href="/manage_home_page.html" class="back-link">返回管理主頁</a>
         </header>
 
-        <!-- 財務總結區塊 -->
         <div id="financial-summary" class="summary-container">
-            <!-- JS 將會在這裡填入總收入、總支出、總利潤 -->
+            <!-- JS 填入 -->
         </div>
-
-        <!-- 新增一個表格容器 -->
+        
+        <!-- 【修改這裡】也加上搜尋框，讓風格統一 -->
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="依項目描述搜尋...">
+        </div>
+        
         <div class="table-container">
-            <table id="financial-table">
+            <!-- 【修改這裡】加上 class="data-table" -->
+            <table id="financial-table" class="data-table">
                 <thead>
                     <tr>
                         <th>日期</th>
@@ -34,13 +35,11 @@
                     </tr>
                 </thead>
                 <tbody id="financial-table-body">
-                    <!-- JS 將會在這裡填入財務明細 -->
+                    <!-- JS 填入 -->
                 </tbody>
             </table>
         </div>
     </div>
-
-    <!-- JS 腳本連結保持不變，並維持在 body 的最末端 -->
     <script src="/static/JS/manage_financial.js"></script> 
 </body>
 </html>

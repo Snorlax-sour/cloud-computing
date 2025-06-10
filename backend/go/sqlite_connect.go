@@ -263,48 +263,49 @@ func (db *DB) submitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+
+// 在 backend/go/sqlite_connect.go 中
+
 func (db *DB) startOrderHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("startOrderHandler called")
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
+    log.Println("=====================================================")
+    log.Println("startOrderHandler called")
 
-	// Get session data
-	session, err := db.sessionStore.Get(r, "session-name")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	username, ok := session.Values["username"].(string)
-	var redirectURL string
-	if !ok {
-		redirectURL = "/html/home_page.html"
-	} else if username == "boss" {
-		redirectURL = "/html/manage_home_page.html"
-	} else {
-		redirectURL = "/html/menu.html" // 搞錯檔案
-	}
-	tmpl := `
-        <!DOCTYPE html>
-        <html>
-        <head>
-        <meta charset="utf-8">
-        <title>跳转中...</title>
-        <meta http-equiv="refresh" content="1;url={{.RedirectURL}}" />
-        </head>
-        <body>
-          
-        </body>
-        </html>
-    `
+    // 1. 檢查請求方法是否為 POST
+    if r.Method != http.MethodPost {
+        http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+        return
+    }
 
-	t := template.Must(template.New("response").Parse(tmpl))
-	data := ResponseData{
-		RedirectURL: redirectURL,
-	}
-	t.Execute(w, data)
-	return
+    // 2. 獲取當前 session
+    session, err := db.sessionStore.Get(r, "session-name")
+    if err != nil {
+        log.Printf("startOrderHandler: 無法獲取 session: %v。將以未登入用戶身份處理。", err)
+        // 即使 session 獲取失敗，也應該讓用戶能點餐，所以我們不中斷流程
+    }
+
+    // 3. 檢查 session 中是否有 'username'
+    username, ok := session.Values["username"].(string)
+    
+    var redirectURL string
+
+    // 4. 根據是否為 'boss' 決定跳轉路徑
+    // 這個邏輯與您最開始的設計保持一致
+    if ok && username == "boss" {
+        // 如果 session 中有 username 且值為 'boss'
+        log.Println("startOrderHandler: User 'boss' is logged in. Redirecting to manage home page.")
+        redirectURL = "/manage_home_page.html"
+    } else {
+        // 其他所有情況 (未登入、普通用戶登入等)
+        log.Println("startOrderHandler: User is not 'boss' or not logged in. Redirecting to menu.")
+        redirectURL = "/menu.html"
+    }
+
+    // 5. 【【【 核心修改 】】】
+    // 使用 http.Redirect 函數發送一個標準的 HTTP 302 重導向。
+    // 這會告訴瀏覽器立即跳轉到 redirectURL 指定的地址。
+    // 這是最可靠、最高效的伺服器端跳轉方式。
+    http.Redirect(w, r, redirectURL, http.StatusFound) // StatusFound 對應的狀態碼就是 302
 }
 
 // struct to store the query result of ingredient table
@@ -348,25 +349,32 @@ func (db *DB) getAllIngredientData() ([]IngredientData, error) {
 
 	return allIngredientData, nil
 }
+// in sqlite_connect.go
+
 func (db *DB) manageIngredientHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("manageIngredientHandler called")
-	ingredientData, err := db.getAllIngredientData()
-	if err != nil {
-		http.Error(w, "Error querying ingredient data", http.StatusInternalServerError)
-		return
-	}
-	tmpl, err := template.ParseFiles("/html/manage_ingredient.html")
-	if err != nil {
-		log.Println("Error parsing html files", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-	err = tmpl.Execute(w, ingredientData) // assign to err to check the error
-	if err != nil {
-		log.Println("Error executing template:", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
+    log.Println("=====================================================")
+    log.Println("manageIngredientHandler called")
+
+    if r.Method != http.MethodGet {
+        http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    ingredientData, err := db.getAllIngredientData()
+    if err != nil {
+        http.Error(w, "Error querying ingredient data", http.StatusInternalServerError)
+        log.Printf("manageIngredientHandler: [錯誤] 查詢食材資料失敗: %v", err)
+        return
+    }
+
+    log.Printf("manageIngredientHandler: [成功] 查詢到 %d 筆食材資料。", len(ingredientData))
+    
+    w.Header().Set("Content-Type", "application/json")
+    if err := json.NewEncoder(w).Encode(ingredientData); err != nil {
+        log.Printf("manageIngredientHandler: [錯誤] 將食材資料編碼為 JSON 時失敗: %v", err)
+    } else {
+        log.Println("manageIngredientHandler: [成功] 已將食材資料以 JSON 格式回應。")
+    }
 }
 
 type FinancialData struct {
@@ -429,4 +437,34 @@ func (db *DB) manageFinancialHandler(w http.ResponseWriter, r *http.Request) {
     } else {
         log.Println("manageFinancialHandler: [成功] 已將財務資料以 JSON 格式回應。")
     }
+}
+
+func (db *DB) logoutHandler(w http.ResponseWriter, r *http.Request) {
+    log.Println("=====================================================")
+    log.Println("logoutHandler called")
+
+    // 1. 獲取當前的 session
+    session, err := db.sessionStore.Get(r, "session-name")
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    // 2. 將 session 的 MaxAge 設置為 -1，這會告訴瀏覽器立即刪除這個 Cookie
+    session.Options.MaxAge = -1
+	/*
+	
+	*/
+    
+    // 3. 儲存更改，將刪除指令發送給瀏覽器
+    err = session.Save(r, w)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    // 4. 重導向回首頁
+    // 雖然前端 JS 會處理跳轉，但後端重導向是一個好的備用方案
+    log.Println("Session cookie deleted. Redirecting to home page.")
+    http.Redirect(w, r, "/home_page.html", http.StatusFound)
 }

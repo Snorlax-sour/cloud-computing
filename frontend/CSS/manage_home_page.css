@@ -1,9 +1,29 @@
+/* ... 原有的 CSS 內容 ... */
+
 /* 加入至中與間距的樣式 */
 body {
-display: flex;
-justify-content: center;
-align-items: center;
-height: 100vh;
-margin: 0;
-background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f9f9f9;
+}
+
+/* 【【【 新增登出按鈕的專屬樣式 】】】 */
+.logout-button {
+    width: 200px; 
+    height: 60px;
+    font-size: 24px;
+    border: none;   
+    border-radius: 8px;
+    background-color: #e53e3e; /* 使用紅色作為背景 */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px; /* 和上面的按鈕組有一些間距 */
+}
+
+.logout-button:hover {
+    background-color: #c53030; /* 滑鼠懸停時的深紅色 */
 }

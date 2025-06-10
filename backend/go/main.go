@@ -32,24 +32,24 @@ func main() {
 	// }
 
 	// Serve Static Files
-	http.Handle("/CSS/", http.StripPrefix("/CSS/", http.FileServer(http.Dir("../CSS"))))
-	http.Handle("/JS/", http.StripPrefix("/JS/", http.FileServer(http.Dir("../JS"))))
-	http.Handle("/IMAGE/", http.StripPrefix("/IMAGE/", http.FileServer(http.Dir("../IMAGE"))))
-	http.Handle("/HTML/", http.StripPrefix("/HTML/", http.FileServer(http.Dir("../HTML"))))
+	// http.Handle("/CSS/", http.StripPrefix("/CSS/", http.FileServer(http.Dir("../CSS"))))
+	// http.Handle("/JS/", http.StripPrefix("/JS/", http.FileServer(http.Dir("../JS"))))
+	// http.Handle("/IMAGE/", http.StripPrefix("/IMAGE/", http.FileServer(http.Dir("../IMAGE"))))
+	// http.Handle("/HTML/", http.StripPrefix("/HTML/", http.FileServer(http.Dir("../HTML"))))
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/HTML/home_page.html", http.StatusFound)
-	})
+	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	http.Redirect(w, r, "/HTML/home_page.html", http.StatusFound)
+	// })
 
 	// 業務邏輯： 登入、開始點餐按鈕按下去的處理
-	http.HandleFunc("/login", db.submitHandler)
+	http.HandleFunc("/api/login", db.submitHandler)
 	// start order
 	// change to /start_order
-	http.HandleFunc("/start_order", db.startOrderHandler)
+	http.HandleFunc("/api/start_order", db.startOrderHandler)
 	// manage ingredient
-	http.HandleFunc("/manage_ingredient", db.manageIngredientHandler)
+	http.HandleFunc("/api/manage_ingredient", db.manageIngredientHandler)
 	// manage financial
-	http.HandleFunc("/manage_financial", db.manageFinancialHandler)
+	http.HandleFunc("/api/manage_financial", db.manageFinancialHandler)
 	// Start Server
 	log.Println("Server is listening on: http://localhost:8080 in container, expose http://localhost:5000 ")
 	err = http.ListenAndServe(":8080", nil)

@@ -49,7 +49,7 @@ services:
       #DATABASE_NAME: order_db       # 請替換為您的資料庫名稱
       #API_DEBUG_MODE: "true"
     volumes:
-      - ./sql:/app/data
+      - ./backend/sql:/app/data
     # 連接到 'app_network' 網路
     networks:
       - app_network
@@ -77,8 +77,8 @@ services:
     #restart: unless-stopped
 
 # 定義具名卷宗，用於持久化資料庫資料等
-volumes:
-  db_data: # Docker 會自動管理這個卷宗的儲存位置
+# volumes:
+#   db_data: # Docker 會自動管理這個卷宗的儲存位置
 
 # 定義自定義網路，讓服務之間可以互相通訊
 networks:

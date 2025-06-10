@@ -28,10 +28,10 @@ RUN mkdir -p /usr/share/nginx/html/static
 # 將所有前端靜態檔案複製到 Nginx 服務的目錄中
 # 注意：這些路徑是相對於 Dockerfile 所在目錄 (即 frontend/)
 # 您需要確保這些檔案在構建時都位於 frontend/ 目錄內或其子目錄中
-COPY HTML/index.html /usr/share/nginx/html/
-COPY CSS/ /usr/share/nginx/html/static/css/
-COPY JS/ /usr/share/nginx/html/static/js/
-COPY IMAGE/ /usr/share/nginx/html/static/image/
+COPY HTML/ /usr/share/nginx/html/
+COPY CSS/ /usr/share/nginx/html/static/CSS/
+COPY JS/ /usr/share/nginx/html/static/JS/
+COPY IMAGE/ /usr/share/nginx/html/static/IMAGE/
 # 如果您還有其他靜態檔案或目錄，可以按需添加更多 COPY 指令
 
 # 暴露 80 埠，這是 Nginx 預設監聽 HTTP 請求的埠口

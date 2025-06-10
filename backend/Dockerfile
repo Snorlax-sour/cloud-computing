@@ -23,7 +23,7 @@ RUN go mod tidy
 # 編譯 Go 應用程式。因為 builder 已經是 Alpine 基礎，所以編譯出來的執行檔
 # 將會與 Alpine 運行時兼容。
 # 不需再手動加 -a -installsuffix cgo，Go 會根據基礎映像自動處理
-RUN GOOS=linux go build -o main .
+RUN COMPOSE_BAKE=true GOOS=linux go build -o main .
 
 # --- 第二階段：輕量級運行時映像 ---
 FROM ubuntu:latest

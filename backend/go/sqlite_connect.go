@@ -6,7 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-
+	"encoding/json" // json need
 	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3" // Import the driver
 )
@@ -214,9 +214,9 @@ func (db *DB) submitHandler(w http.ResponseWriter, r *http.Request) {
 		session.Values["username"] = username
 		session.Save(r, w) // save session
 		if username == "boss" {
-			redirectURL = "/HTML/manage_home_page.html"
+			redirectURL = "/html/manage_home_page.html"
 		} else {
-			redirectURL = "/HTML/home_page.html"
+			redirectURL = "/html/home_page.html"
 		}
 
 		tmpl := `
@@ -247,14 +247,14 @@ func (db *DB) submitHandler(w http.ResponseWriter, r *http.Request) {
             <head>
             <meta charset="utf-8">
             <title>驗證失敗</title>
-            <meta http-equiv="refresh" content="2;url=/HTML/login.html" />
+            <meta http-equiv="refresh" content="2;url=/html/login.html" />
             </head>
             <body>
             <h1> 帳號密碼錯誤 </h1>
             </body>
             </html>
         `
-		redirectURL = "/HTML/login.html"
+		redirectURL = "/html/login.html"
 		t := template.Must(template.New("response").Parse(tmpl))
 		data := ResponseData{
 			RedirectURL: redirectURL,
@@ -279,11 +279,11 @@ func (db *DB) startOrderHandler(w http.ResponseWriter, r *http.Request) {
 	username, ok := session.Values["username"].(string)
 	var redirectURL string
 	if !ok {
-		redirectURL = "/HTML/home_page.html"
+		redirectURL = "/html/home_page.html"
 	} else if username == "boss" {
-		redirectURL = "/HTML/manage_home_page.html"
+		redirectURL = "/html/manage_home_page.html"
 	} else {
-		redirectURL = "/HTML/menu.html" // 搞錯檔案
+		redirectURL = "/html/menu.html" // 搞錯檔案
 	}
 	tmpl := `
         <!DOCTYPE html>
@@ -355,7 +355,7 @@ func (db *DB) manageIngredientHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error querying ingredient data", http.StatusInternalServerError)
 		return
 	}
-	tmpl, err := template.ParseFiles("../HTML/manage_ingredient.html")
+	tmpl, err := template.ParseFiles("/html/manage_ingredient.html")
 	if err != nil {
 		log.Println("Error parsing html files", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -370,10 +370,10 @@ func (db *DB) manageIngredientHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 type FinancialData struct {
-	FinancialDate           string
-	FinancialActionCost     int
-	FinancialActionType     string
-	FinancialActionDescribe string
+    FinancialDate       string  `json:"financial_date"`
+    FinancialActionCost float64 `json:"financial_action_cost"`
+    FinancialActionType string  `json:"financial_action_type"`
+    FinancialActionDescribe string `json:"financial_action_describe"`
 }
 
 func (db *DB) getAllFinancialData() ([]FinancialData, error) {
@@ -387,7 +387,7 @@ func (db *DB) getAllFinancialData() ([]FinancialData, error) {
 
 	var allFinancialData []FinancialData
 	for rows.Next() {
-		var data FinancialData
+		var data FinancialData  
 		err = rows.Scan(&data.FinancialDate, &data.FinancialActionCost, &data.FinancialActionType, &data.FinancialActionDescribe)
 		if err != nil {
 			log.Println("Error scanning financial data:", err)
@@ -402,22 +402,31 @@ func (db *DB) getAllFinancialData() ([]FinancialData, error) {
 	return allFinancialData, nil
 }
 func (db *DB) manageFinancialHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("manageFinancialHandler called")
-	financialData, err := db.getAllFinancialData()
-	if err != nil {
-		http.Error(w, "Error querying financial data", http.StatusInternalServerError)
-		return
-	}
-	tmpl, err := template.ParseFiles("../HTML/manage_financial.html")
-	if err != nil {
-		log.Println("Error parsing html files", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-	err = tmpl.Execute(w, financialData) // assign to err to check the error
-	if err != nil {
-		log.Println("Error executing template:", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
+    log.Println("=====================================================")
+    log.Println("manageFinancialHandler called")
+
+    if r.Method != http.MethodGet {
+        http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+        log.Printf("manageFinancialHandler: Invalid method %s. Expected GET.", r.Method)
+        return
+    }
+
+    financialData, err := db.getAllFinancialData()
+    if err != nil {
+        http.Error(w, "Error querying financial data", http.StatusInternalServerError)
+        log.Printf("manageFinancialHandler: [錯誤] 查詢財務資料失敗: %v", err)
+        return
+    }
+
+    // 【新增的除錯日誌】
+    log.Printf("manageFinancialHandler: [成功] 查詢到 %d 筆財務資料。", len(financialData))
+    log.Printf("manageFinancialHandler: [資料預覽] 準備回傳的財務資料：%+v", financialData)
+
+
+    w.Header().Set("Content-Type", "application/json")
+    if err := json.NewEncoder(w).Encode(financialData); err != nil {
+        log.Printf("manageFinancialHandler: [錯誤] 將資料編碼為 JSON 時失敗: %v", err)
+    } else {
+        log.Println("manageFinancialHandler: [成功] 已將財務資料以 JSON 格式回應。")
+    }
 }

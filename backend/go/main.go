@@ -49,7 +49,7 @@ func main() {
 	// manage ingredient
 	http.HandleFunc("/api/manage_ingredient", db.manageIngredientHandler)
 	// manage financial
-	http.HandleFunc("/api/manage_financial", db.manageFinancialHandler)
+	http.HandleFunc("/api/manageFinancial", db.manageFinancialHandler)
 	// Start Server
 	log.Println("Server is listening on: http://localhost:8080 in container, expose http://localhost:5000 ")
 	err = http.ListenAndServe(":8080", nil)

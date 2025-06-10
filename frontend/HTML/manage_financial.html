@@ -1,48 +1,37 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
-    <head>
-        <title> 財務管理 </title>
-        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/static/CSS/basic_icon_or_something_with_component.css">
-        <link rel="stylesheet" href="/static/CSS/normalize.css">
-        <link rel="stylesheet" href="/static/CSS/manage_financial.css">
-        <meta http-equiv="refresh" content="60" />
-    </head>
-    <body>
-        <div class="search-container">
-            <input type="text" placeholder="查詢日期/金額/餐點/餐點編碼">
-            <button class="search-button">🔍</button>
-        </div>
-        
-        <div class="result-container">
-            <p class="date">2025/1/9 搜尋結果</p>
-            <table class="result-table">
-                <thead>
-                    <tr>
-                        <th>時間</th>
-                        <th>金額</th>
-                        <th>類型</th>
-                        <th>細項</th>
-                    </tr>
-                </thead>
-                <tbody>
-                  {{range .}}
-                    <tr>
-                        <td>{{.FinancialDate}}</td>
-                        <td>{{.FinancialActionCost}}</td>
-                        <td>{{.FinancialActionType}}</td>
-                        <td>{{.FinancialActionDescribe}}</td>
-                    </tr>
-                   {{end}}
-                </tbody>
-            </table>
-        </div>        
-        <a href="/manage_home_page.html" class="home-icon-link">
-            <img class="home-icon" src="/static/IMAGE/arrow-left.png" alt="管理者首頁">
-        </a>            
-        <script src="/JS/ingredient_refresh.js"> </script>
-        <div class="Purple_button">
-            <a href="/manage_financial">   <button id="manage_ingredient" type="button" value="login_interface"> 財務管理 </button> </a>
-         </div>
-    </body>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>財務管理</title>
+    <!-- CSS 連結可以繼續放在 head -->
+    <link rel="stylesheet" href="/static/CSS/manage_financial.css">
+</head>
+<body>
+    <h1>財務報表</h1>
+
+    <!-- 這是您要用 JS 填入資料的地方 -->
+    <div id="financial-summary">
+        <!-- 財務總結將顯示在這裡 -->
+    </div>
+
+    <table id="financial-table">
+        <thead>
+            <tr>
+                <th>日期</th>
+                <th>收入</th>
+                <th>支出</th>
+                <th>利潤</th>
+            </tr>
+        </thead>
+        <tbody id="financial-table-body">
+            <!-- 財務明細將動態生成在這裡 -->
+        </tbody>
+    </table>
+
+    <!-- 
+      原本可能在這裡或在 <head> 裡的 <script> 標籤，
+      把它移動到這裡！
+    -->
+    <script src="/static/JS/manage_financial.js"></script> 
+</body>
 </html>

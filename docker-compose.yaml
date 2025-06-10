@@ -1,6 +1,7 @@
 # docker-compose.yml
 # 定義 Docker Compose 檔案格式的版本, not docker compose cli version
-version: '3.8'
+# new version not need it
+# version: '3.8'
 
 # 定義應用程式中的所有服務
 services:
@@ -71,9 +72,9 @@ services:
     #POSTGRES_USER: admin_user     # 用戶名
     #POSTGRES_PASSWORD: my_secret_password # 密碼
     # 連接到 'app_network' 網路
-    networks:
-      - app_network
-    restart: unless-stopped
+    #networks:
+    #- app_network
+    #restart: unless-stopped
 
 # 定義具名卷宗，用於持久化資料庫資料等
 volumes:

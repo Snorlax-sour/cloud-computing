@@ -51,7 +51,7 @@ func main() {
 	// manage financial
 	http.HandleFunc("/manage_financial", db.manageFinancialHandler)
 	// Start Server
-	log.Println("Server is listening on: http://localhost:8080")
+	log.Println("Server is listening on: http://localhost:8080 in container, expose http://localhost:5000 ")
 	err = http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Fatalf("Failed to start server: %v", err)

@@ -19,7 +19,7 @@ type DB struct {
 
 // CHANGED: added error return
 func connect_sqlite() (*DB, error) {
-	file := "../sql/order_db.db"
+	file := "./data/order_db.db" // change path because fit container of path 2025/06/10
 	db, err := sql.Open("sqlite3", file)
 	if err != nil {
 		log.Println("Error connecting to database:", err)

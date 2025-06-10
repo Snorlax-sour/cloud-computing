@@ -31,7 +31,7 @@ RUN mkdir -p /usr/share/nginx/html/static
 COPY HTML/index.html /usr/share/nginx/html/
 COPY CSS/ /usr/share/nginx/html/static/css/
 COPY JS/ /usr/share/nginx/html/static/js/
-COPY IMAGES/ /usr/share/nginx/html/static/images/
+COPY IMAGE/ /usr/share/nginx/html/static/image/
 # 如果您還有其他靜態檔案或目錄，可以按需添加更多 COPY 指令
 
 # 暴露 80 埠，這是 Nginx 預設監聽 HTTP 請求的埠口

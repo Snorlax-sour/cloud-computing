@@ -27,10 +27,11 @@ The architecture described in this section represents our ideal plan for this we
 5.  Backend listen: http://localhost:5000
 
 ``` bash
-git clone --branch cloud_computing_project https://github.com/Snorlax-sour/cloud-computing.git
+git clone https://github.com/Snorlax-sour/cloud-computing.git
 cd ./cloud-computing
 docker compose up --build
 ```
+---
 
 
 

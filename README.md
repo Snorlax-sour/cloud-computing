@@ -20,15 +20,15 @@ The architecture described in this section represents our ideal plan for this we
 
 ## Getting Started
 
-1.  Clone this repository: $ git clone --branch cloud_computing_project https://github.com/Snorlax-sour/Web-ordering-system-software_enginner.git
-2.  Navigate to the project directory: $ cd ./Web-ordering-system-software_enginner
+1.  Clone this repository: $ git clone https://github.com/Snorlax-sour/cloud-computing.git
+2.  Navigate to the project directory: $ cd ./cloud-computing
 3.  Build and start the containers: $ docker compose up --build
 4.  Access the frontend at: http://localhost:80
 5.  Backend listen: http://localhost:5000
 
 ``` bash
-git clone --branch cloud_computing_project https://github.com/Snorlax-sour/Web-ordering-system-software_enginner.git
-cd ./Web-ordering-system-software_enginner
+git clone --branch cloud_computing_project https://github.com/Snorlax-sour/cloud-computing.git
+cd ./cloud-computing
 docker compose up --build
 ```
 

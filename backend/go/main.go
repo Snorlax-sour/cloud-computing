@@ -56,6 +56,10 @@ func main() {
 	http.HandleFunc("/api/menu_items", db.getMenuItemsHandler)
 	// manage menu, add menu funcational
 	http.HandleFunc("/api/add_menu_item", db.addMenuItemHandler)
+	// call google oauth api
+	http.HandleFunc("/api/login/google", Google_login)
+	// callabck by  google oauth
+	http.HandleFunc("/go/callback")
 	// Start Server
 	log.Println("Server is listening on: http://localhost:8080 in container, expose http://localhost:5000 ")
 	err = http.ListenAndServe(":8080", nil)

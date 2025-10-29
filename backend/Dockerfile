@@ -1,7 +1,7 @@
 # web_ordering_system/backend/Dockerfile
 # 使用 Go 官方映像的 Alpine 版本作為基礎映像
 # 這會讓 Go 編譯器連結到 musl libc，與 Alpine 運行時兼容
-FROM golang:1.23 AS builder
+FROM golang:1.24 AS builder
 
 WORKDIR /app
 

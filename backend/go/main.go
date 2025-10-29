@@ -48,14 +48,18 @@ func main() {
 	http.HandleFunc("/api/start_order", db.startOrderHandler)
 	// manage ingredient
 	http.HandleFunc("/api/manage_ingredient", db.manageIngredientHandler)
-	// manage financial
-	http.HandleFunc("/api/manageFinancial", db.manageFinancialHandler)
+	// manage financial 由於任何人可以獲取，所以改成驗證模式
+	http.HandleFunc("/api/manageFinancial", db.AuthMiddleware(db.manageFinancialHandler))
+
+	// http.HandleFunc("/api/manageFinancial", db.manageFinancialHandler)
 	// manage logout
 	http.HandleFunc("/api/logout", db.logoutHandler)
 	// menu request items
 	http.HandleFunc("/api/menu_items", db.getMenuItemsHandler)
 	// manage menu, add menu funcational
 	http.HandleFunc("/api/add_menu_item", db.addMenuItemHandler)
+	// menu update
+	http.HandleFunc("/api/update_menu", db.updateMenu)
 	// call google oauth api
 	http.HandleFunc("/api/login/google", Google_login)
 	// callabck by  google oauth

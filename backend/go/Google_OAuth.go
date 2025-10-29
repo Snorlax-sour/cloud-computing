@@ -21,6 +21,9 @@ var googleOauthConfig = &oauth2.Config{
 	Endpoint:     google.Endpoint,
 }
 
+// 必須定義這個 Session 名稱，否則編譯失敗
+const sessionName = "oauth_state"
+
 // generateState generates a secure random string for the OAuth state parameter.
 func generateState() (string, error) {
 	// 建立一個 32 位元組的緩衝區 (byte buffer)
@@ -55,9 +58,12 @@ func Google_login(w http.ResponseWriter, r *http.Request) {
 	// 4. 將用戶導向 Google 進行授權
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 	// 獲取 token
-	token, err := googleOauthConfig.Exchange(ctx, code)
-	// ... 處理錯誤
+	// token, err := googleOauthConfig.Exchange(ctx, code)
+	// // ... 處理錯誤
+	// if err != nil {
+	// 	log.Printf("Token exchange token: %v", token)
 
+	// }
 	// 成功獲取 token 後，您就可以使用它來驗證用戶身份了
 }
 

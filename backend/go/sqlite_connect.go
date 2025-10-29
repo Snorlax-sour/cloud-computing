@@ -307,7 +307,45 @@ func (db *DB) startOrderHandler(w http.ResponseWriter, r *http.Request) {
 	// 這是最可靠、最高效的伺服器端跳轉方式。
 	http.Redirect(w, r, redirectURL, http.StatusFound) // StatusFound 對應的狀態碼就是 302
 }
+// AuthMiddleware 是一個 Go 的 HTTP 中間件函式
+// 它接收一個 http.HandlerFunc (您原本的處理函式)
+// 並返回一個新的 http.HandlerFunc，其中包含了身份驗證邏輯
+func (db *DB) AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// 1. 從請求中獲取 Session
+		session, err := db.sessionStore.Get(r, "session-name")
+		if err != nil {
+			// 如果 Session 獲取失敗 (例如密鑰錯誤)，視為伺服器錯誤
+			http.Error(w, "Session error", http.StatusInternalServerError)
+			log.Printf("AuthMiddleware: [錯誤] 獲取 Session 失敗: %v", err)
+			return
+		}
 
+		// 2. 檢查 Session 中是否存有 "username"
+		username, ok := session.Values["username"]
+
+		// 3. 執行驗證邏輯
+		if !ok || username == nil || username == "" {
+			// 如果不存在或為空，表示用戶未登入
+			log.Println("AuthMiddleware: [拒絕] 未經授權的訪問，Session 中無用戶名。")
+            
+            // 建議：對於 API 請求，返回 401 Unauthorized
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Unauthorized access. Please log in."})
+			return
+		}
+
+		// 【重要】將驗證成功的用戶名傳遞給下一個處理函式
+        // 這允許 manageFinancialHandler 知道是誰在訪問 (如果需要的話)
+		// 這裡我們先不實作傳遞，但這是標準做法。
+
+		log.Printf("AuthMiddleware: [允許] 用戶 %s 訪問。", username)
+		
+		// 驗證通過：將請求傳遞給下一個處理函式 (即 manageFinancialHandler)
+		next.ServeHTTP(w, r)
+	}
+}
 // struct to store the query result of ingredient table
 type IngredientData struct {
 	IngredientName               string
@@ -378,6 +416,18 @@ func (db *DB) manageIngredientHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// func (db *DB) updateIngredient(w http.ResponseWriter, r *http.Request){
+// 	// 更新食材
+// 	log.Println("=====================================================")
+// 	log.Println("updateIngredient called")
+
+// 	if r.Method != http.MethodPut {
+// 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+// 		return
+// 	}
+// 	query := "UPDATE Ingredient SET ingredient_remaining_inventory = ? WHERE ingredient_name = ?"
+
+// }
 type FinancialData struct {
 	FinancialDate           string  `json:"financial_date"`
 	FinancialActionCost     float64 `json:"financial_action_cost"`
@@ -593,4 +643,85 @@ func (db *DB) addMenuItemHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 7. 新增成功後，重導向回菜單管理頁面
 	http.Redirect(w, r, "/manage_menu.html", http.StatusFound)
+}
+
+// 定義接收前端 PUT 請求的 JSON 結構
+type UpdateMenuRequest struct {
+	OldName     string `json:"old_name"`    // 舊名稱，用於 WHERE 條件定位
+	// 以下欄位與你的資料庫欄位 (Menu) 和前端輸入匹配
+    NewName     string `json:"new_name"`    // 對應 Menu.menu_name
+    Description string `json:"menu_describe_and_material"` // 對應 Menu.menu_describe_and_material
+    Price       int    `json:"menu_money"`    // 對應 Menu.menu_money
+    ImageURL    string `json:"menu_image"`    // 對應 Menu.menu_image
+	
+}
+
+// 修改menu菜單內容 (使用 PUT 方法)
+func (db *DB) updateMenu(w http.ResponseWriter, r *http.Request) {
+	log.Println("=====================================================")
+	log.Println("updateMenu 舊結構 (修正後) 被呼叫")
+
+	// 1. 檢查請求方法 (已修正)
+	if r.Method != http.MethodPut {
+		http.Error(w, "Method Not Allowed - 請使用 PUT 請求", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// 2. 解析 JSON 請求體 (重大修正: 使用 JSON 解碼器)
+	var reqData UpdateMenuRequest
+	// 必須使用 r.Body 而不是 r.ParseForm()
+	err := json.NewDecoder(r.Body).Decode(&reqData)
+	if err != nil {
+		log.Printf("解析 JSON 錯誤: %v", err)
+		http.Error(w, "無法解析 JSON 數據", http.StatusBadRequest)
+		return
+	}
+
+	// 3. 簡單的後端驗證 (使用解析後的結構體)
+	if reqData.OldName == "" || reqData.NewName == "" || reqData.Price == 0 {
+		http.Error(w, "舊名稱、新名稱和價格為必填項", http.StatusBadRequest)
+		return
+	}
+
+	log.Printf("收到修改餐點請求: 舊名稱=%s, 新名稱=%s, 價格=%d", reqData.OldName, reqData.NewName, reqData.Price)
+
+	// 4. 準備 SQL UPDATE 語句 (重大修正: 使用 SET 和 WHERE)
+	query := `
+        UPDATE Menu 
+        SET 
+            menu_name = ?, 
+            menu_money = ?, 
+            menu_describe_and_material = ?, 
+            menu_image = ?,
+            menu_visable = 1  /* 假設預設可見，如果前端沒有提供 visable 欄位，手動設定 */
+        WHERE 
+            menu_name = ?  /* 必須使用舊名稱來鎖定要更新的目標 */
+    `
+	stmt, err := db.db.Prepare(query)
+	if err != nil {
+		log.Printf("準備 SQL 語句時出錯: %v", err)
+		http.Error(w, "資料庫內部錯誤", http.StatusInternalServerError)
+		return
+	}
+	defer stmt.Close()
+
+	// 5. 執行 SQL 語句
+	// 順序必須與 SQL 語句中的 ? 順序一致
+	_, err = stmt.Exec(
+		reqData.NewName,     // 1. menu_name (新值)
+		reqData.Price,       // 2. menu_money
+		reqData.Description, // 3. menu_describe_and_material
+		reqData.ImageURL,    // 4. menu_image
+		reqData.OldName,     // 5. WHERE menu_name (舊值)
+	)
+
+	if err != nil {
+		log.Printf("執行更新 SQL 失敗: %v", err)
+		http.Error(w, "更新菜單資料失敗", http.StatusInternalServerError)
+		return
+	}
+
+	// 6. 返回成功
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("菜單項目更新成功"))
 }
